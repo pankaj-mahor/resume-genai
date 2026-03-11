@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./auth.form.scss";
 import useAuth from "../hooks/useAuth";
 const Login = () => {
+  const navigate = useNavigate();
+
   const { handleLogin, isLoading } = useAuth();
 
   const [email, setEmail] = useState("");
@@ -11,6 +13,8 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     await handleLogin({ email, password });
+
+    navigate("/");
   };
 
   if (isLoading) {
@@ -51,7 +55,11 @@ const Login = () => {
             />
           </div>
 
-          <button type="submit" className="button button-primary">
+          <button
+            type="submit"
+            className="button button-primary"
+            disabled={isLoading}
+          >
             Login
           </button>
           <p>
