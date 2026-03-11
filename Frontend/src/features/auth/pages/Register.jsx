@@ -1,11 +1,30 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 const Register = () => {
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+  const { handleRegister, isLoading } = useAuth();
+
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted");
+    await handleRegister({ username, email, password });
+    navigate("/");
   };
+
+  if (isLoading) {
+    return (
+      <main className="form-container">
+        <div className="loading-container">
+          <h1 className="loading-text">Loading...</h1>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main>
@@ -19,12 +38,20 @@ const Register = () => {
               type="text"
               id="username"
               placeholder="Enter your username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
           </div>
 
           <div className="input-group">
             <label htmlFor="email">Email</label>
-            <input type="email" id="email" placeholder="Enter your email" />
+            <input
+              type="email"
+              id="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </div>
 
           <div className="input-group">
@@ -33,10 +60,16 @@ const Register = () => {
               type="password"
               id="password"
               placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
 
-          <button type="submit" className="button button-primary">
+          <button
+            type="submit"
+            className="button button-primary"
+            disabled={isLoading}
+          >
             Register
           </button>
           <p>
