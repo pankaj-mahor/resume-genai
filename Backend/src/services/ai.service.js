@@ -146,5 +146,5 @@ const invokeGeminiAI = async () => {
 };
 
 module.exports = {
-  invokeGeminiAI,
+  generateInterviewReport,
 };
