@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   return (
@@ -183,6 +184,13 @@ const Home = () => {
                   Generate My Interview Strategy
                 </button>
               </div>
+
+              <Link
+                to={`/interview/${3}`}
+                className="button button-primary interview-cta"
+              >
+                Generate My Interview Strategy
+              </Link>
             </article>
           </div>
         </section>
