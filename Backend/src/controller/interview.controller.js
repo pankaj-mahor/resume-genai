@@ -6,12 +6,6 @@ const { get } = require("mongoose");
  * @route POST /api/interview/generate-interview-report
  * @description Generate an interview report for a candidate on basis of job description and resume
  * @access Private
- * @returns {Object} 200 - Interview report generated successfully
- * @returns {Object} 400 - Bad request
- * @returns {Object} 500 - Internal server error
- *
- * @param {*} req
- * @param {*} res
  */
 const generateInterviewReportController = async (req, res) => {
   const { jobDescription, selfDescription } = req.body;
@@ -91,7 +85,6 @@ const getAllInterviewReportsController = async (req, res) => {
       "-resume -selfDescription -jobDescription -__v -technicalQuestions -behavioralQuestions -skillGaps -preparationPlan",
     );
 
-  console.log(interviewReports);
   if (!interviewReports) {
     return res
       .status(400)
