@@ -1,7 +1,58 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useInterview } from "../hooks/useInterview";
 
+const defaultJobDescription = `
+Senior Frontend Engineer at Google requires proficiency in React, TypeScript, and large-scale system design...
+`;
+
+const defaultSelfDescription = `
+I am a software engineer with 5 years of experience in web development. I have worked on a variety of projects using React, Node.js, and MongoDB. I am a quick learner and I am always looking for new challenges.
+`;
 const Home = () => {
+  const { loading, handleGenerateInterviewReport } = useInterview();
+  const navigate = useNavigate();
+
+  const [jobDescription, setJobDescription] = useState(defaultJobDescription);
+  const [selfDescription, setSelfDescription] = useState(
+    defaultSelfDescription,
+  );
+  const [resume, setResume] = useState(null);
+
+  const resumeInputRef = useRef(null);
+
+  const handleGenerateReport = async () => {
+    const resumeFile = resumeInputRef.current.files[0];
+
+    if (!resumeFile || !jobDescription || !selfDescription) {
+      alert("Please fill all the fields");
+      return;
+    }
+
+    const data = await handleGenerateInterviewReport({
+      jobDescription,
+      selfDescription,
+      resumeFile,
+    });
+    console.log("report generation:", data);
+
+    navigate(`/interview/${data._id}`);
+  };
+
+  if (loading) {
+    return (
+      <main className="interview-home">
+        <div className="interview-home__container">
+          <div className="interview-home__header">
+            <div className="loading-container">
+              <h1 className="loading-text">Loading...</h1>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="interview-home">
       <div className="interview-home__container">
@@ -55,6 +106,8 @@ const Home = () => {
                 Target job description
               </label>
               <textarea
+                value={jobDescription}
+                onChange={(e) => setJobDescription(e.target.value)}
                 className="interview-textarea"
                 id="jobDescription"
                 name="jobDescription"
@@ -145,6 +198,7 @@ const Home = () => {
                   type="file"
                   accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                   hidden
+                  ref={resumeInputRef}
                 />
               </div>
 
@@ -163,6 +217,8 @@ const Home = () => {
                   className="interview-textarea interview-textarea--compact"
                   id="selfDescription"
                   name="selfDescription"
+                  value={selfDescription}
+                  onChange={(e) => setSelfDescription(e.target.value)}
                   placeholder="Briefly describe your experience, key skills, and years of experience if you don't have a resume handy..."
                 />
               </div>
@@ -179,18 +235,20 @@ const Home = () => {
                 </span>
                 <button
                   type="button"
+                  onClick={handleGenerateReport}
                   className="button button-primary interview-cta"
+                  //   disabled={loading}
                 >
-                  Generate My Interview Strategy
+                  {"Generate My Interview "}
                 </button>
               </div>
 
-              <Link
+              {/* <Link
                 to={`/interview/${3}`}
                 className="button button-primary interview-cta"
               >
                 Generate My Interview Strategy
-              </Link>
+              </Link> */}
             </article>
           </div>
         </section>

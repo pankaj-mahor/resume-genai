@@ -1,0 +1,76 @@
+import { useContext } from "react";
+import {
+  getAllInterviewReportsOfUser,
+  getInterviewReportById,
+  generateInterviewReport,
+} from "../services/interview.api";
+import { InterviewContext } from "../interview.context";
+
+export const useInterview = () => {
+  const { loading, report, setLoading, setReport, reports, setReports } =
+    useContext(InterviewContext);
+
+  const handleGenerateInterviewReport = async ({
+    jobDescription,
+    selfDescription,
+    resumeFile,
+  }) => {
+    let response = null;
+    try {
+      setLoading(true);
+      response = await generateInterviewReport({
+        jobDescription,
+        selfDescription,
+        resumeFile,
+      });
+      setReport(response.interviewReport);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+
+    return response.interviewReport;
+  };
+
+  const handleGetAllInterviewReports = async () => {
+    let response = null;
+    try {
+      setLoading(true);
+      response = await getAllInterviewReportsOfUser();
+      setReports(response.reports);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+
+    return response.reports;
+  };
+
+  const handleGetInterviewReportById = async (interviewId) => {
+    let response = null;
+    try {
+      setLoading(true);
+      response = await getInterviewReportById(interviewId);
+      setReport(response.interviewReport);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+
+    return response.report;
+  };
+
+  return {
+    loading,
+    report,
+
+    reports,
+
+    handleGenerateInterviewReport,
+    handleGetInterviewReportById,
+    handleGetAllInterviewReports,
+  };
+};
