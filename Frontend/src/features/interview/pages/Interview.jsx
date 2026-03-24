@@ -69,22 +69,7 @@ const Interview = () => {
   const { interviewId } = useParams();
   const [activeNav, setActiveNav] = useState("technical");
 
-  const {
-    report,
-    handleGetInterviewReportById,
-    loading,
-    handleGetAllInterviewReports,
-  } = useInterview();
-
-  console.log(interviewId);
-
-  useEffect(() => {
-    if (interviewId) {
-      handleGetInterviewReportById(interviewId);
-    } else {
-      handleGetAllInterviewReports();
-    }
-  }, [interviewId]);
+  const { report, loading } = useInterview();
 
   if (loading) {
     return (
