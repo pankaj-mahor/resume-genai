@@ -14,19 +14,17 @@ const { get } = require("mongoose");
  * @param {*} res
  */
 const generateInterviewReportController = async (req, res) => {
-  const resumeFile = req.file;
-
   const { jobDescription, selfDescription } = req.body;
   const userId = req.user.id;
 
-  if (!resumeFile) {
+  if (!req.file) {
     return res
       .status(400)
       .json({ message: "Resume file is required", success: false });
   }
 
   const resumeDataFromPDF = await new pdfParse.PDFParse(
-    Uint8Array.from(resumeFile.buffer),
+    Uint8Array.from(req.file.buffer),
   ).getText();
   const resumeTextFromPDF = resumeDataFromPDF.text;
 
@@ -37,9 +35,11 @@ const generateInterviewReportController = async (req, res) => {
     selfDescription,
   });
 
+  console.log("INTERVIEW REPORT GEN", interviewReportByAI);
+
   const newInterviewReport = await interviewReportModel.create({
     user: userId,
-    resume: resumeDataFromPDF,
+    resume: resumeTextFromPDF,
     selfDescription,
     jobDescription,
     ...interviewReportByAI,
@@ -57,14 +57,7 @@ const generateInterviewReportController = async (req, res) => {
  * @route GET /api/interview/:interviewId
  * @description Get an interview report for a candidate
  * @access Private
- * @returns {Object} 200 - Interview report fetched successfully
- * @returns {Object} 400 - Bad request
- * @returns {Object} 500 - Internal server error
- *
- * @param {*} req
- * @param {*} res
  */
-
 const getInterviewReportIdController = async (req, res) => {
   const { interviewId } = req.params;
   const interviewReport = await interviewReportModel.findOne({
@@ -87,18 +80,17 @@ const getInterviewReportIdController = async (req, res) => {
  * @route GET /api/interview/all
  * @description Get all interview reports for a candidate
  * @access Private
- * @returns {Object} 200 - Interview reports fetched successfully
- * @returns {Object} 400 - Bad request
- * @returns {Object} 500 - Internal server error
- *
- * @param {*} req
- * @param {*} res
  */
-
 const getAllInterviewReportsController = async (req, res) => {
-  const interviewReports = await interviewReportModel.find({
-    user: req.user.id,
-  });
+  const interviewReports = await interviewReportModel
+    .find({
+      user: req.user.id,
+    })
+    .sort({ createdAt: -1 })
+    .select(
+      "-resume -selfDescription -jobDescription -__v -technicalQuestions -behavioralQuestions -skillGaps -preparationPlan",
+    );
+
   if (!interviewReports) {
     return res
       .status(400)
