@@ -91,6 +91,7 @@ const getAllInterviewReportsController = async (req, res) => {
       "-resume -selfDescription -jobDescription -__v -technicalQuestions -behavioralQuestions -skillGaps -preparationPlan",
     );
 
+  console.log(interviewReports);
   if (!interviewReports) {
     return res
       .status(400)

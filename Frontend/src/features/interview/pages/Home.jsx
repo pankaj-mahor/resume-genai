@@ -10,7 +10,7 @@ const defaultSelfDescription = `
 I am a software engineer with 5 years of experience in web development. I have worked on a variety of projects using React, Node.js, and MongoDB. I am a quick learner and I am always looking for new challenges.
 `;
 const Home = () => {
-  const { loading, handleGenerateInterviewReport } = useInterview();
+  const { loading, handleGenerateInterviewReport, reports } = useInterview();
   const navigate = useNavigate();
 
   const [jobDescription, setJobDescription] = useState(defaultJobDescription);
@@ -19,6 +19,7 @@ const Home = () => {
   );
   const [resume, setResume] = useState(null);
 
+  console.log(reports);
   const resumeInputRef = useRef(null);
 
   const handleGenerateReport = async () => {
@@ -251,6 +252,35 @@ const Home = () => {
               </Link> */}
             </article>
           </div>
+        </section>
+
+        <section className="report-section">
+          {/* Recent Reports List */}
+          {reports && reports?.length > 0 && (
+            <section className="recent-reports">
+              <h2>My Recent Interview Plans</h2>
+              <ul className="reports-list">
+                {reports.map((report) => (
+                  <li
+                    key={report._id}
+                    className="report-item"
+                    onClick={() => navigate(`/interview/${report._id}`)}
+                  >
+                    <h3>{report.title || "Untitled Position"}</h3>
+                    <p className="report-meta">
+                      Generated on{" "}
+                      {new Date(report.createdAt).toLocaleDateString()}
+                    </p>
+                    <p
+                      className={`match-score ${report.matchScore >= 80 ? "score--high" : report.matchScore >= 60 ? "score--mid" : "score--low"}`}
+                    >
+                      Match Score: {report.matchScore}%
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
         </section>
       </div>
     </main>

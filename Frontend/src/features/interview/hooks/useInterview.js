@@ -41,7 +41,7 @@ export const useInterview = () => {
     try {
       setLoading(true);
       response = await getAllInterviewReportsOfUser();
-      setReports(response.reports);
+      setReports(response.interviewReports);
     } catch (error) {
       console.error(error);
     } finally {
