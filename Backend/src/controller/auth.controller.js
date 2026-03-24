@@ -45,7 +45,12 @@ const registerUserController = async (req, res) => {
     { expiresIn: "1h" },
   );
 
-  res.cookie("token", token, { httpOnly: true, secure: true, maxAge: 3600000 });
+  res.cookie("token", token, {
+    maxAge: new Date(Date.now() + 3600000),
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax",
+  }); // 1 hour
 
   if (newUser) {
     return res.status(201).json({
@@ -102,7 +107,12 @@ const loginUserController = async (req, res) => {
     { expiresIn: "1h" },
   );
 
-  res.cookie("token", token, { httpOnly: true, secure: true, maxAge: 3600000 });
+  res.cookie("token", token, {
+    maxAge: new Date(Date.now() + 3600000),
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax",
+  }); // 1 hour
 
   res.status(200).json({
     message: "User logged in successfully",
