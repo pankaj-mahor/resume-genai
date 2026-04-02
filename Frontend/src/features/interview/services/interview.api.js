@@ -51,3 +51,9 @@ export async function getInterviewReportById(interviewId) {
   const response = await axiosInstance.get(`/api/interview/${interviewId}`);
   return response.data;
 }
+export async function getGeneratedResume(interviewId) {
+  const response = await axiosInstance.get(
+    `/api/interview/resume/pdf/${interviewId}`,
+  );
+  return response.data;
+}
