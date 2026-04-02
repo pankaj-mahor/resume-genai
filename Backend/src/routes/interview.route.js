@@ -18,6 +18,28 @@ interviewRouter.post(
 
 /**
  *
+ * @route GET /api/interview/:interviewId
+ * @description Get all interview reports for a candidate
+ * @access Private
+ */
+interviewRouter.post(
+  "/:interviewReportId",
+  authenticateToken,
+  interviewController.getAllInterviewReportsController,
+);
+
+/**
+ * @route GET /api/interview/resume/pdf
+ * @description generate resume pdf on the basis of user self description, resume content and job description.
+ * @access private
+ */
+interviewRouter.post(
+  "/resume/pdf/:interviewReportId",
+  authenticateToken,
+  interviewController.generateResumePdfController,
+);
+/**
+ *
  * @route GET /api/interview/all
  * @description Get all interview reports for a candidate
  * @access Private
@@ -26,18 +48,6 @@ interviewRouter.get(
   "/all",
   authenticateToken,
   interviewController.getAllInterviewReportsController,
-);
-
-/**
- *
- * @route GET /api/interview/:interviewId
- * @description Get an interview report for a candidate
- * @access Private
- */
-interviewRouter.get(
-  "/:interviewId",
-  authenticateToken,
-  interviewController.getInterviewReportIdController,
 );
 
 module.exports = interviewRouter;
